@@ -9,13 +9,12 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 )
 
-var jwtSecret = []byte(os.Getenv("DB_USER"))
-
 func GetJWTSecret() []byte {
+	jwtSecret := os.Getenv("JWT_SECRET")
 	if len(jwtSecret) == 0 {
 		panic("JWT_SECRET environment variable not set")
 	}
-	return jwtSecret
+	return []byte(jwtSecret)
 }
 
 // GenerateAccessToken creates a signed JWT access token with a 15-minute expiry.
@@ -24,7 +23,7 @@ func GenerateAccessToken(userID uint) (string, error) {
 		"user_id": userID,
 		"exp":     time.Now().Add(15 * time.Minute).Unix(),
 	})
-	return token.SignedString(jwtSecret)
+	return token.SignedString(GetJWTSecret())
 }
 
 func GenerateRefreshToken() (string, error) {

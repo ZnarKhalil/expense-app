@@ -71,7 +71,7 @@ func (h *ExpenseHandler) GetExpenses(c *gin.Context) {
 	u := user.(models.User)
 
 	var expenses []models.Expense
-	if err := h.DB.Where("user_id = ?", u.ID).Find(&expenses).Error; err != nil {
+	if err := h.DB.Preload("Category").Preload("User").Where("user_id = ?", u.ID).Find(&expenses).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}

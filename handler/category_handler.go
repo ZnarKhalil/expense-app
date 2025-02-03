@@ -60,7 +60,7 @@ func (h *CategoryHandler) GetCategories(c *gin.Context) {
 	u := user.(models.User)
 
 	var categories []models.ExpenseCategory
-	if err := h.DB.Where("user_id = ?", u.ID).Find(&categories).Error; err != nil {
+	if err := h.DB.Preload("User").Where("user_id = ?", u.ID).Find(&categories).Error; err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
