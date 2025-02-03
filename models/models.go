@@ -17,22 +17,25 @@ type User struct {
 
 type ExpenseCategory struct {
 	ID          uint   `gorm:"primaryKey"`
-	UserID      uint   `gorm:"not null"`
+	UserID      uint   `gorm:"not null;index"`
 	Name        string `gorm:"not null"`
 	Description string
 	CreatedAt   time.Time
 	UpdatedAt   time.Time
+	User        User `gorm:"foreignKey:UserID"`
 }
 
 type Expense struct {
 	ID                uint      `gorm:"primaryKey"`
-	UserID            uint      `gorm:"not null"`
-	ExpenseCategoryID uint      `gorm:"not null"`
+	UserID            uint      `gorm:"not null;index"`
+	ExpenseCategoryID uint      `gorm:"not null;index"`
 	Amount            float64   `gorm:"not null"`
 	Date              time.Time `gorm:"not null"`
 	Note              string
 	CreatedAt         time.Time
 	UpdatedAt         time.Time
+	User              User            `gorm:"foreignKey:UserID"`
+	Category          ExpenseCategory `gorm:"foreignKey:ExpenseCategoryID"`
 }
 
 type RefreshToken struct {
@@ -41,6 +44,7 @@ type RefreshToken struct {
 	Token     string    `gorm:"unique;not null"`
 	ExpiresAt time.Time `gorm:"not null"`
 	CreatedAt time.Time
+	User      User `gorm:"foreignKey:UserID"`
 }
 
 func AutoMigrate(db *gorm.DB) {

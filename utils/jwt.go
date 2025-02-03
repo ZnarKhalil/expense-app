@@ -12,6 +12,9 @@ import (
 var jwtSecret = []byte(os.Getenv("DB_USER"))
 
 func GetJWTSecret() []byte {
+	if len(jwtSecret) == 0 {
+		panic("JWT_SECRET environment variable not set")
+	}
 	return jwtSecret
 }
 
